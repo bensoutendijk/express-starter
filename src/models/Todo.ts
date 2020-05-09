@@ -1,13 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-const todoSchema = new Schema<TodoModel>({
-    title: String,
-    description: String,
-    createdOn: Date,
-    updatedOn: Date,
-});
-
-mongoose.model<TodoModel>('Todo', todoSchema);
+import mongoose from 'mongoose';
 
 export enum TodoStatus {
     Doing,
@@ -15,13 +6,21 @@ export enum TodoStatus {
     Archived,
 }
 
-export interface Todo {
+export interface Todo extends mongoose.Document {
     title: string,
     description: string,
+    status: TodoStatus,
     createdOn: Date,
     updatedOn: Date,
 }
 
-export interface TodoModel extends Document, Todo {
+const todoSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    status: { type: TodoStatus, required: true },
+    createdOn: { type: Date, required: true },
+    updatedOn: { type: Date, required: false },
+});
 
-}
+mongoose.model<Todo>('Todo', todoSchema);
+export default Todo;
