@@ -1,6 +1,6 @@
 import express from 'express';
 import authRoutes from './auth';
-// import chatRoutes from './chat';
+import todoRoutes from './todos';
 // import analyticsRoutes from './analytics'
 
 const router = express.Router();
@@ -12,5 +12,6 @@ router.post('/hello', (req, res) => {
 })
 
 router.use('/auth', authRoutes);
+router.use('/todos', todoRoutes)
 
 export default router;
