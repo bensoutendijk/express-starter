@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import passport from 'passport';
-import express, { Request } from 'express';
+import express, { Request, Response } from 'express';
 
 import auth from '../../../auth';
 import { LocalUserModel } from '../../../models/LocalUser';
@@ -61,7 +61,7 @@ router.get('/login',
 
 router.get('/callback',
     ...auth.required,
-    passport.authenticate('google', { failureRedirect: '/login' }), async (req, res) => {
+    passport.authenticate('google', { failureRedirect: '/login' }), async (req: Request, res: Response) => {
         const { user } = req;
 
         const localUser = await LocalUser.findOne({ id: user._id });
@@ -85,7 +85,7 @@ router.get('/callback',
         return res.redirect('/');
     });
 
-router.get('/current', ...auth.required, async (req, res) => {
+router.get('/current', ...auth.required, async (req: Request, res: Response) => {
     const { user } = req;
 
     if (user) {
