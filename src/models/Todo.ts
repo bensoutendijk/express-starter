@@ -9,7 +9,7 @@ export enum TodoStatus {
 
 export interface Todo extends mongoose.Document {
     title: string;
-    description: string;
+    description?: string;
     status: TodoStatus;
     createdOn: Date;
     updatedOn: Date;
@@ -18,7 +18,7 @@ export interface Todo extends mongoose.Document {
 
 const todoSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String, required: false },
     status: { type: TodoStatus, required: true },
     createdOn: { type: Date, required: true },
     updatedOn: { type: Date, required: true },

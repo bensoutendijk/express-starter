@@ -17,7 +17,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
             userid: user._id,
             createdOn: new Date().getTime(),
             updatedOn: new Date().getTime(),
-            status: TodoStatus.Todo
+            status: body.status
         });
 
         await todo.save();
