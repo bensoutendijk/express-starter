@@ -26,7 +26,11 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 
     const board = await Board.findOne({
       _id: body.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
     if (board === null) {
@@ -69,7 +73,11 @@ router.get('/:cardid', ...auth.required, async (req: Request, res: Response): Pr
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -99,7 +107,11 @@ router.post('/:cardid', ...auth.required, async (req: Request, res: Response): P
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -138,16 +150,26 @@ router.delete('/:cardid', ...auth.required, async (req: Request, res: Response):
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
     if (board === null) {
       throw new Error('board not found');
     }
-
     Object.assign(card, {
-      archived: !card.archived,
+      archived: true,
+    });
+    await Board.updateOne({ 
+      _id: card.boardid, 
+    }, { 
+      $pull: { 
+        cards: card._id, 
+      },
     });
 
     await card.save();

@@ -23,4 +23,4 @@ const boardSchema = new mongoose.Schema({
 mongoose.model<Board>('Board', boardSchema);
 export default Board;
 
-export type BoardUpdateProperties = 'title' | 'updatedOn' | 'members' | 'categories' | 'cards';
+export type BoardUpdateProperties = 'title' | 'updatedOn' | 'categories' | 'cards';

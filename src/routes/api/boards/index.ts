@@ -28,7 +28,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       title: body.title,
       createdOn: new Date().getTime(),
       updatedOn: new Date().getTime(),
-      members: [user._id],
+      members: [ { id: user._id, scopes: ['admin']} ],
       categories: [],
       cards: [],
       archived: false,
@@ -47,7 +47,11 @@ router.get('/', ...auth.required, async (req: Request, res: Response): Promise<R
 
   try {
     const boards = await Board.find({
-      members: user._id,
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -64,7 +68,11 @@ router.get('/:boardid', ...auth.required, async (req: Request, res: Response): P
   try {
     const board = await Board.findOne({
       _id: params.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -81,7 +89,7 @@ router.get('/:boardid', ...auth.required, async (req: Request, res: Response): P
     });
 
     return res.status(200).send({
-      ...board,
+      ...board.toJSON(),
       cards,
       categories,
     });
@@ -97,7 +105,11 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
   try {
     const board = await Board.findOne({ 
       _id: params.boardid,
-      members: { id: user._id, scopes: 'admin' },
+      members: { 
+        $elemMatch: {
+          id: user._id, scopes: 'admin',
+        },
+      },
       archived: false,
     });
 
@@ -108,7 +120,6 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
     Object.assign<Board, Pick<Board, BoardUpdateProperties>>(board, {
       title: body.title,
       updatedOn: new Date(),
-      members: body.members,
       categories: body.categories,
       cards: body.cards,
     });
@@ -127,8 +138,11 @@ router.delete('/:boardid', ...auth.required, async (req: Request, res: Response)
   try {
     const board = await Board.findOne({ 
       _id: params.boardid,
-      members: { id: user._id, scopes: 'admin' },
-      archived: false,
+      members: { 
+        $elemMatch: {
+          id: user._id, scopes: 'admin',
+        },
+      },
     });
 
     if (board === null) {

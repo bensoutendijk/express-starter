@@ -26,7 +26,11 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 
     const board = await Board.findOne({
       _id: body.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -45,7 +49,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
     
     await board.save();
     await category.save();
-    return res.status(200).send(board);
+    return res.status(200).send(category);
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
@@ -58,6 +62,7 @@ router.post('/:categoryid', ...auth.required, async (req: Request, res: Response
   try {
     const category = await Category.findOne({
       _id: params.categoryid,
+      archived: false,
     });
 
     if (category === null) {
@@ -66,7 +71,11 @@ router.post('/:categoryid', ...auth.required, async (req: Request, res: Response
 
     const board = await Board.findOne({ 
       _id: category.boardid,
-      members: { id: user._id },
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -80,7 +89,7 @@ router.post('/:categoryid', ...auth.required, async (req: Request, res: Response
     });
 
     await category.save();
-    return res.status(200).send(board);
+    return res.status(200).send(category);
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
@@ -93,6 +102,7 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
   try {
     const category = await Category.findOne({
       _id: params.categoryid,
+      archived: false,
     });
 
     if (category === null) {
@@ -100,8 +110,12 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
     }
 
     const board = await Board.findOne({ 
-      _id: params.boardid,
-      members: { id: user._id, scopes: 'admin' },
+      _id: category.boardid,
+      members: { 
+        $elemMatch: {
+          id: user._id,
+        },
+      },
       archived: false,
     });
 
@@ -110,11 +124,16 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
     }
 
     Object.assign(category, {
-      archived: !category.archived,
+      archived: true,
     });
-    board.categories = board.categories.filter(id => id !== category._id);
+    await Board.updateOne({ 
+      _id: category.boardid, 
+    }, { 
+      $pull: { 
+        categories: category._id, 
+      }, 
+    });
 
-    await board.save();
     await category.save();
     return res.status(200).send(board);
   } catch (error) {
