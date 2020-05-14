@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import mongoose from 'mongoose';
 import auth from "../../../auth";
-import Todo, { TodoStatus } from "../../../models/Todo";
+import Card, { TodoStatus } from "../../../models/Card";
 
 const router = express.Router();
 
-const Todo = mongoose.model<Todo>('Todo');
+const Todo = mongoose.model<Card>('Todo');
 
 router.post('/', ...auth.required, async (req: Request, res: Response): Promise<Response> => {
     const { user, body } = req;
