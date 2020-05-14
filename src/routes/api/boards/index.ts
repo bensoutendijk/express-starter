@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import auth from "../../../auth";
 import Card from "../../../models/Card";
 import LocalUser from "../../../models/LocalUser";
-import Board, { BoardUpdateProperties } from "../../../models/Board";
+import Board, { BoardForm } from "../../../models/Board";
 import Category from "../../../models/Category";
 
 const router = express.Router();
@@ -117,7 +117,7 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
       throw new Error('board not found');
     }
 
-    Object.assign<Board, Pick<Board, BoardUpdateProperties>>(board, {
+    Object.assign<Board, BoardForm>(board, {
       title: body.title,
       updatedOn: new Date(),
       categories: body.categories,
