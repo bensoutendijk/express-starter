@@ -3,16 +3,18 @@ import mongoose, { Schema, Document } from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import keys from '../config/keys';
-import { LocalUser } from '../types/LocalUser';
 
-export interface LocalUserModel extends Document, LocalUser {
-  hash: string,
-  salt: string,
-  setPassword: (password: string) => void,
-  validatePassword: (password: string) => boolean,
-  generateHttpOnlyJWT: () => string,
-  generateJWT: () => string,
-  toJSON: () => LocalUser,
+export interface LocalUser extends Document {
+  email: string;
+  permissions: string[];
+  services: string[];
+  hash: string;
+  salt: string;
+  setPassword: (password: string) => void;
+  validatePassword: (password: string) => boolean;
+  generateHttpOnlyJWT: () => string;
+  generateJWT: () => string;
+  toJSON: () => LocalUser;
 }
 
 const userSchema = new Schema({
@@ -28,7 +30,7 @@ userSchema.methods.setPassword = function setPassword(password: string): void {
   this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
 };
 
-userSchema.methods.validatePassword = function validatePassword(password : string): boolean {
+userSchema.methods.validatePassword = function validatePassword(password: string): boolean {
   const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
   return this.hash === hash;
 };
@@ -61,13 +63,14 @@ userSchema.methods.generateJWT = function generateJWT(): string {
   }, keys.jwtKey);
 };
 
-userSchema.methods.toJSON = function toJSON(): LocalUser {
+userSchema.methods.toJSON = function toJSON() {
   return {
-    _id: this.id, // eslint-disable-line no-underscore-dangle
+    _id: this._id,
     email: this.email,
     permissions: this.permissions,
     services: this.services,
   };
 };
 
-mongoose.model<LocalUserModel>('LocalUser', userSchema);
+mongoose.model<LocalUser>('LocalUser', userSchema);
+export default LocalUser;

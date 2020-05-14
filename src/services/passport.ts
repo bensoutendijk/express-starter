@@ -3,11 +3,11 @@ import passport from 'passport';
 import * as passportLocal from 'passport-local';
 import * as passportGoogle from 'passport-google-oauth';
 import keys from '../config/keys';
-import { LocalUserModel } from '../models/LocalUser';
+import { LocalUser } from '../models/LocalUser';
 
 const { googleClientId, googleClientSecret, googleCallbackUrl } = keys;
 
-const LocalUser = mongoose.model<LocalUserModel>('LocalUser');
+const LocalUser = mongoose.model<LocalUser>('LocalUser');
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -25,7 +25,7 @@ passport.use(new passportLocal.Strategy({
 }, async (email, password, done) => {
 
   try {
-    const localUser: LocalUserModel | null = await LocalUser.findOne({ email });
+    const localUser: LocalUser | null = await LocalUser.findOne({ email });
     
     if (localUser === null) {
       throw new Error('user not found');

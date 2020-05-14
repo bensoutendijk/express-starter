@@ -1,8 +1,14 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { OAuthUser } from '../types';
 
-export interface OAuthUserModel extends Document, OAuthUser {
-  
+export interface OAuthUserModel extends Document {
+  data?: any;
+  localUser: string;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: Date;
+  };
+  provider: string;
 }
 
 const oauthUserSchema = new Schema({
