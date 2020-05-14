@@ -12,6 +12,9 @@ mongoose.Promise = global.Promise;
 mongoose.connect(keys.mongoURI, { useNewUrlParser: true });
 require('./models/LocalUser');
 require('./models/OAuthUser');
+require('./models/Card');
+require('./models/Board');
+require('./models/Category');
 require('./services/passport');
 
 // Create express app

@@ -1,17 +1,14 @@
 import express from 'express';
 import authRoutes from './auth';
-import todoRoutes from './todos';
-// import analyticsRoutes from './analytics'
+import cardsRoutes from './cards';
+import boardsRoutes from './boards'
+import categoriesRoutes from './categories'
 
 const router = express.Router();
 
-router.post('/hello', (req, res) => {
-  const { body } = req;
-  console.log(body);
-  res.sendStatus(200);
-})
-
 router.use('/auth', authRoutes);
-router.use('/todos', todoRoutes)
+router.use('/cards', cardsRoutes);
+router.use('/boards', boardsRoutes);
+router.use('/categories', categoriesRoutes);
 
 export default router;
