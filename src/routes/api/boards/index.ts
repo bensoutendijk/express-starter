@@ -120,8 +120,6 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
     Object.assign<Board, BoardForm>(board, {
       title: body.title,
       updatedOn: new Date(),
-      categories: body.categories,
-      cards: body.cards,
     });
 
     await board.save();
