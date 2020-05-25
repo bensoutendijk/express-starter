@@ -1,9 +1,7 @@
-# express-starter
-A starter kit for an express.js webserver written in TypeScript.
+# Express.js Starter Kit
+A starter kit for an express.js webserver written in TypeScript. This particular server serve as a REST api for full featured Kanban-style list making application. You can fin
 
-## Features
-- Express.js server
-- MongoDB connection
+## Additional Features
+- MongoDB database
 - Local Auth
 - Google OAuth
-- Todos Model
