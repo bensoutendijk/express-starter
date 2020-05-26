@@ -103,7 +103,7 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
   const { user, body, params } = req;
 
   try {
-    const board = await Board.findOne({ 
+    const board = await Board.findOneAndUpdate({ 
       _id: params.boardid,
       members: { 
         $elemMatch: {
@@ -111,19 +111,16 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
         },
       },
       archived: false,
+    }, {
+      ...body,
+      updatedOn: new Date(),
     });
 
     if (board === null) {
       throw new Error('board not found');
     }
 
-    Object.assign<Board, BoardForm>(board, {
-      title: body.title,
-      updatedOn: new Date(),
-    });
-
-    await board.save();
-    return res.status(200).send(board);
+    return res.status(200).send(board.toJSON());
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }

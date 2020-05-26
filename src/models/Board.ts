@@ -23,4 +23,4 @@ const boardSchema = new mongoose.Schema({
 mongoose.model<Board>('Board', boardSchema);
 export default Board;
 
-export type BoardForm = Pick<Board, 'title' | 'updatedOn' >;
+export type BoardForm = Pick<Board, 'title' | 'updatedOn' | 'categories' >;
