@@ -39,17 +39,19 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
     }
 
     const category = new Category({
-      title: body.title,
+      ...body,
       createdOn: new Date().getTime(),
       updatedOn: new Date().getTime(),
-      boardid: body.boardid,
       archived: false,
-    });
-    board.categories.push(category._id);
-    
-    await board.save();
+    });    
     await category.save();
-    return res.status(200).send(category);
+    board.categories.push(category._id);
+    await board.save();
+
+    return res.status(200).send({
+      board,
+      category,
+    });
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
@@ -59,36 +61,29 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 router.post('/:categoryid', ...auth.required, async (req: Request, res: Response): Promise<Response> => {
   const { user, body, params } = req;
 
+  const board = await Board.findOne({ 
+    _id: body.boardid,
+    members: { 
+      $elemMatch: {
+        id: user._id,
+      },
+    },
+    archived: false,
+  });
+
+  if (board === null) {
+    throw new Error('board not found');
+  }
+
   try {
-    const category = await Category.findOne({
+    const category = await Category.findOneAndUpdate({
       _id: params.categoryid,
       archived: false,
-    });
-
-    if (category === null) {
-      throw new Error('category not found');
-    }
-
-    const board = await Board.findOne({ 
-      _id: category.boardid,
-      members: { 
-        $elemMatch: {
-          id: user._id,
-        },
-      },
-      archived: false,
-    });
-
-    if (board === null) {
-      throw new Error('board not found');
-    }
-
-    Object.assign<Category, Pick<Category, CategoryUpdateProperties>>(category, {
-      title: body.title,
+    }, {
+      ...body,
       updatedOn: new Date(),
     });
 
-    await category.save();
     return res.status(200).send(category);
   } catch (error) {
     return res.status(400).send({ message: error.message });

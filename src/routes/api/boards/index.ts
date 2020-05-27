@@ -88,8 +88,10 @@ router.get('/:boardid', ...auth.required, async (req: Request, res: Response): P
       _id: { $in: board.categories },
     });
 
+    categories.sort((a, b) => board.categories.indexOf(a._id) - board.categories.indexOf(b._id));
+
     return res.status(200).send({
-      ...board.toJSON(),
+      board,
       cards,
       categories,
     });
@@ -114,7 +116,7 @@ router.post('/:boardid', ...auth.required, async (req: Request, res: Response): 
     }, {
       ...body,
       updatedOn: new Date(),
-    });
+    }, { new: true });
 
     if (board === null) {
       throw new Error('board not found');
