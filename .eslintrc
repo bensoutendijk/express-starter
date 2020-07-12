@@ -20,7 +20,7 @@
       "prefer-const": "error",
       "prefer-rest-params": "error",
       "prefer-spread": "error",
-      "quotes": "off",
+      "quotes": ["error", "single"],
       "comma-dangle": ["error", {
         "arrays": "always-multiline",
         "objects": "always-multiline",
@@ -28,6 +28,7 @@
         "exports": "always-multiline",
         "functions": "always-multiline"
       }],
+      "no-trailing-spaces": "error",
       "@typescript-eslint/indent": ["error", 2],
       "@typescript-eslint/semi": ["error", "always"],
       "@typescript-eslint/adjacent-overload-signatures": "error",

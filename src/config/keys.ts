@@ -1,12 +1,11 @@
-  
 function getKeys(env?: string): Keys {
   let res: {
-      default: Keys;
+    default: Keys;
   };
   if (env === 'production') {
-      res = require('./prod');
+    res = require('./prod');
   } else {
-      res = require('./dev');
+    res = require('./dev');
   }
   return res.default;
 }
@@ -15,7 +14,7 @@ const keys: Keys = getKeys(process.env.NODE_ENV);
 
 export default keys;
 
-export type Keys = {
+export interface Keys {
   mongoURI: string;
   cookieKey: string;
   jwtHttpOnlyKey: string;
@@ -23,4 +22,4 @@ export type Keys = {
   googleClientId: string;
   googleClientSecret: string;
   googleCallbackUrl: string;
-};
+}

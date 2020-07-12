@@ -42,7 +42,7 @@ userSchema.methods.generateHttpOnlyJWT = function generateHttpOnlyJWT(): string 
 
   return jwt.sign({
     email: this.email,
-    _id: this._id, 
+    _id: this._id,
     permissions: this.permissions,
     services: this.services,
     exp: Math.floor(expirationDate.getTime() / 1000),

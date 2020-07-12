@@ -26,7 +26,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 
     const board = await Board.findOne({
       _id: body.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -47,7 +47,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       archived: false,
     });
     board.cards.push(card._id);
-    
+
     await board.save();
     await card.save();
 
@@ -73,7 +73,7 @@ router.get('/:cardid', ...auth.required, async (req: Request, res: Response): Pr
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -96,8 +96,8 @@ router.post('/:cardid', ...auth.required, async (req: Request, res: Response): P
   const { user, body, params } = req;
 
   try {
-    const card = await Card.findOne({ 
-      _id: params.cardid, 
+    const card = await Card.findOne({
+      _id: params.cardid,
       archived: false,
     });
 
@@ -107,7 +107,7 @@ router.post('/:cardid', ...auth.required, async (req: Request, res: Response): P
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -150,7 +150,7 @@ router.delete('/:cardid', ...auth.required, async (req: Request, res: Response):
 
     const board = await Board.findOne({
       _id: card.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -164,11 +164,11 @@ router.delete('/:cardid', ...auth.required, async (req: Request, res: Response):
     Object.assign(card, {
       archived: true,
     });
-    await Board.updateOne({ 
-      _id: card.boardid, 
-    }, { 
-      $pull: { 
-        cards: card._id, 
+    await Board.updateOne({
+      _id: card.boardid,
+    }, {
+      $pull: {
+        cards: card._id,
       },
     });
 

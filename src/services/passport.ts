@@ -26,7 +26,7 @@ passport.use(new passportLocal.Strategy({
 
   try {
     const localUser: LocalUser | null = await LocalUser.findOne({ email });
-    
+
     if (localUser === null) {
       throw new Error('user not found');
     }
