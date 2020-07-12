@@ -26,7 +26,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 
     const board = await Board.findOne({
       _id: body.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -43,7 +43,7 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
       createdOn: new Date().getTime(),
       updatedOn: new Date().getTime(),
       archived: false,
-    });    
+    });
     await category.save();
     board.categories.push(category._id);
     await board.save();
@@ -61,9 +61,9 @@ router.post('/', ...auth.required, async (req: Request, res: Response): Promise<
 router.post('/:categoryid', ...auth.required, async (req: Request, res: Response): Promise<Response> => {
   const { user, body, params } = req;
 
-  const board = await Board.findOne({ 
+  const board = await Board.findOne({
     _id: body.boardid,
-    members: { 
+    members: {
       $elemMatch: {
         id: user._id,
       },
@@ -104,9 +104,9 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
       throw new Error('category not found');
     }
 
-    const board = await Board.findOne({ 
+    let board = await Board.findOne({
       _id: category.boardid,
-      members: { 
+      members: {
         $elemMatch: {
           id: user._id,
         },
@@ -121,16 +121,15 @@ router.delete('/:categoryid', ...auth.required, async (req: Request, res: Respon
     Object.assign(category, {
       archived: true,
     });
-    await Board.updateOne({ 
-      _id: category.boardid, 
-    }, { 
-      $pull: { 
-        categories: category._id, 
-      }, 
-    });
+
+    board = await Board.findByIdAndUpdate(category.boardid, {
+      $pull: {
+        categories: category._id,
+      },
+    }, { new: true });
 
     await category.save();
-    return res.status(200).send(board);
+    return res.status(200).send({ category, board });
   } catch (error) {
     return res.status(400).send({ message: error.message });
   }
